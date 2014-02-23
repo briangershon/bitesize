@@ -1,0 +1,40 @@
+{
+  "name": "bitesize",
+  "version": "0.0.1",
+  "description": "A blog library that gathers content from a GitHub repository.",
+  "keywords": "blog, markdown, github",
+  "main": "lib/bitesize.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/briangershon/bitesize.git"
+  },
+  "author": {
+    "name": "Brian Gershon",
+    "url": "http://blog.evolvingbits.com/"
+  },
+  "license": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/briangershon/bitesize/raw/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">=0.8.25"
+  },
+  "dependencies": {
+    "octonode": "~0.5.0",
+    "es6-promise": "~0.1.1",
+    "marked": "~0.3.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "chai": "~1.9.0",
+    "chai-as-promised": "~4.1.0",
+    "sinon": "~1.8.2",
+    "sinon-chai": "~2.5.0"
+  }
+}

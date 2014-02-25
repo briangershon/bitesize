@@ -1,6 +1,6 @@
 # bitesize
 
-A JavaScript blog library that gathers content from a GitHub repository.
+A JavaScript blog library that processes markdown files and creates various blog data structures.
 
 ## More details
 
@@ -21,7 +21,7 @@ API returns ES6 JavaScript promises.
 Create system environmental variables:
 
         export BITESIZE_GITHUB_ACCESS_TOKEN='token-goes-here'   # create token at github.com
-        export BITESIZE_GITHUB_REPO='briangershon/hexo-blog'    # the username and repository
-        export BITESIZE_POST_PATH='source/_posts'               # a path within that repository
+        export BITESIZE_BLOG_GITHUB_REPO='briangershon/hexo-blog'    # the username and repository
+        export BITESIZE_BLOG_GITHUB_POST_PATH='source/_posts'               # a path within that repository
 
 Run `npm start` to run index.js which shows all files in that repository/path

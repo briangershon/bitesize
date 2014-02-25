@@ -1,8 +1,8 @@
 {
   "name": "bitesize",
   "version": "0.0.1",
-  "description": "A blog library that gathers content from a GitHub repository.",
-  "keywords": "blog, markdown, github",
+  "description": "A JavaScript blog library that processes markdown files and creates various blog data structures.",
+  "keywords": "blog, markdown",
   "main": "lib/bitesize.js",
   "scripts": {
     "test": "mocha --reporter spec",

@@ -8,7 +8,8 @@ var chai = require("chai"),
 chai.use(chaiAsPromised);
 // chai.use(sinonChai);
 
-var GH = require('../lib/bitesize.js').GH;
+var GH = require('../lib/bitesize.js').GH,
+  Post = require('../lib/bitesize.js').Post;
 
 /**
  * Pass in an err parameter to mock up an error.
@@ -25,7 +26,7 @@ function mockContents(err, body) {
   };
 }
 
-describe('Blog', function () {
+describe('GH', function () {
   describe('defaults', function () {
     it('should have a postPath', function () {
       var gh = new GH({ghrepo: mockContents(null, [])});
@@ -48,5 +49,30 @@ describe('Blog', function () {
       var gh = new GH({ghrepo: mockContents({message: 'some error'}, null)});
       expect(gh.contents()).to.eventually.be.rejectedWith('Can not retrieve posts: some error').and.notify(done);
     });
+  });
+});
+
+describe('Post', function () {
+  describe('#sections', function () {
+    it('should have a header and body if post is an empty string', function () {
+      var post = new Post({content: ''});
+      expect(post.sections()).to.deep.equal({header: '', body: ''});
+    });
+
+    it('should have a header and body and trim whitespace (without leading "---")', function () {
+      var post = new Post({content: 'title: A Blog Post\n---\n\nBlog content start here...'});
+      expect(post.sections()).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
+    });
+
+    it('should have a header and body and trim whitespace', function () {
+      var post = new Post({content: '---\ntitle: A Blog Post\n---\n\nBlog content start here...'});
+      expect(post.sections()).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
+    });
+
+    it('should have a header and body and trim whitespace (if too many "---")', function () {
+      var post = new Post({content: '---\ntitle: A Blog Post\n---\n\nBlog content start here...--- and should continue.'});
+      expect(post.sections()).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
+    });
+
   });
 });

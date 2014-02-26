@@ -5,7 +5,7 @@
 
 var github = require('octonode'),
   GH = require('./lib/bitesize.js').GH,
-  BlogPosts = require('./lib/bitesize.js').BlogPosts;
+  Blog = require('./lib/bitesize.js').Blog;
 
 var envAccessToken = process.env.BITESIZE_GITHUB_ACCESS_TOKEN,
   envGitHubRepo = process.env.BITESIZE_BLOG_GITHUB_REPO,
@@ -19,9 +19,7 @@ var gh = new GH({
   postPath: envPostPath
 });
 
-console.log('Retrieving all posts...');
-var posts;
-gh.getAllFiles().then(function (posts) {
-  posts = new BlogPosts(posts);
-  posts.show();
+gh.getAllFiles().then(function (files) {
+  var blog = new Blog(files);
+  blog.show();
 });

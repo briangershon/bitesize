@@ -1,6 +1,6 @@
 {
   "name": "bitesize",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A JavaScript blog library that processes markdown files and creates various blog data structures.",
   "keywords": "blog, markdown",
   "main": "lib/bitesize.js",

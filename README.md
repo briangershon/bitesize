@@ -1,6 +1,14 @@
 # bitesize
 
-A JavaScript blog library that processes markdown files and creates various blog data structures.
+A JavaScript blog library that processes markdown files and creates blog data structures:
+
+* Post: A class that converts markdown with YAML front-matter into an object with properties representing the major pieces
+
+* Blog: A class that holds an array of posts
+
+Includes a helper class:
+
+* GH: A class for pulling files out of a GitHub repository
 
 ## More details
 
@@ -25,3 +33,7 @@ Create system environmental variables:
         export BITESIZE_BLOG_GITHUB_POST_PATH='source/_posts'       # a path within that repository
 
 Run `npm start` to run index.js which shows all files in that repository/path
+
+## Running unit tests
+
+        npm test

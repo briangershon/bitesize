@@ -53,26 +53,58 @@ describe('GH', function () {
 });
 
 describe('Post', function () {
+  describe('constructor', function () {
+    it('should default to sane values if no data', function () {
+      var post = new Post();
+      expect(post.title).to.equal('No Title');
+      expect(post.date).to.equal('2013-01-01 12:00');
+      expect(post.categories).to.deep.equal([]);
+      expect(post.tags).to.deep.equal([]);
+      expect(post.body).to.equal('');
+    });
+
+    it('should have all the normal fields', function () {
+      var post = new Post({
+        name: '2012-10-24-testing-for-google-closure-library.markdown',
+        content: '---\n' +
+          'title: "Testing JavaScript Code Running Google Closure Library"\n' +
+          'date: 2012-10-24 12:24\n' +
+          'categories:\n' +
+          '- Programming\n' +
+          'tags:\n' +
+          '- testing\n' +
+          '- JavaScript\n' +
+          '---\n' +
+          'CONTENT\nHERE\n'
+      });
+      expect(post.title).to.equal('Testing JavaScript Code Running Google Closure Library');
+      expect(post.date).to.equal('2012-10-24 12:24');
+      expect(post.categories).to.deep.equal(['Programming']);
+      expect(post.tags).to.deep.equal(['testing', 'JavaScript']);
+      expect(post.body).to.equal('CONTENT\nHERE');
+    });
+  });
+
   describe('#sections', function () {
     it('should have a header and body if post is an empty string', function () {
-      var post = new Post({content: ''});
-      expect(post.sections()).to.deep.equal({header: '', body: ''});
+      var post = new Post();
+      expect(post.sections('')).to.deep.equal({header: '', body: ''});
     });
 
     it('should have a header and body and trim whitespace (without leading "---")', function () {
-      var post = new Post({content: 'title: A Blog Post\n---\n\nBlog content start here...'});
-      expect(post.sections()).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
+      var post = new Post();
+      expect(post.sections('title: A Blog Post\n---\n\nBlog content start here...')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
     });
 
     it('should have a header and body and trim whitespace', function () {
-      var post = new Post({content: '---\ntitle: A Blog Post\n---\n\nBlog content start here...'});
-      expect(post.sections()).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
+      var post = new Post();
+      expect(post.sections('---\ntitle: A Blog Post\n---\n\nBlog content start here...')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
     });
 
     it('should have a header and body and trim whitespace (if too many "---")', function () {
-      var post = new Post({content: '---\ntitle: A Blog Post\n---\n\nBlog content start here...--- and should continue.'});
-      expect(post.sections()).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
+      var post = new Post();
+      expect(post.sections('---\ntitle: A Blog Post\n---\n\nBlog content start here...--- and should continue.')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
     });
-
   });
+
 });

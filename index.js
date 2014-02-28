@@ -1,6 +1,7 @@
 /**
- * This sample app displays the name and contents of all files in a GitHub repository,
- * (for a specific path in that repository) and converts .md and .markdown files into HTML.
+ * This sample app loads up a git repo full of files, processes them
+ * as blog posts, and displays the title from the YAML header in the
+ * markdown files.
  */
 
 var github = require('octonode'),
@@ -21,5 +22,7 @@ var gh = new GH({
 
 gh.getAllFiles().then(function (files) {
   var blog = new Blog(files);
-  blog.show();
+  blog.posts.forEach(function (post) {
+    console.log(post.title);
+  });
 });

@@ -56,6 +56,7 @@ describe('Post', function () {
   describe('constructor', function () {
     it('should default to sane values if no data', function () {
       var post = new Post();
+      expect(post.name).to.equal('2013-01-01-no-title.markdown');
       expect(post.title).to.equal('No Title');
       expect(post.date).to.equal('2013-01-01 12:00');
       expect(post.categories).to.deep.equal([]);
@@ -77,11 +78,36 @@ describe('Post', function () {
           '---\n' +
           'CONTENT\nHERE\n'
       });
+      expect(post.name).to.equal('2012-10-24-testing-for-google-closure-library.markdown');
       expect(post.title).to.equal('Testing JavaScript Code Running Google Closure Library');
       expect(post.date).to.equal('2012-10-24 12:24');
       expect(post.categories).to.deep.equal(['Programming']);
       expect(post.tags).to.deep.equal(['testing', 'JavaScript']);
       expect(post.body).to.equal('CONTENT\nHERE');
+    });
+
+    describe('route', function () {
+      it('should have a default route if invalid filename', function () {
+        var post = new Post({name: ''});
+        expect(post.route).to.equal('/2013/01/01/no-title');
+      });
+
+      it('should have a route based on the correct filename', function () {
+        var post = new Post({name: '2013-04-09-one-letter-repository-status-for-git-mercurial-subversion.markdown'});
+        expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion');
+      });
+
+      it('should have a route based on the filename (even without a file extension)', function () {
+        var post = new Post({name: '2013-04-09-one-letter-repository-status-for-git-mercurial-subversion'});
+        expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion');
+      });
+
+      it('should have a default route (without a leading date)', function () {
+        var post = new Post({
+          name: 'one-letter-repository-status-for-git-mercurial-subversion'});
+        expect(post.route).to.equal('/2013/01/01/no-title');
+      });
+
     });
   });
 

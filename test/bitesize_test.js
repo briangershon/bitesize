@@ -50,6 +50,23 @@ describe('GH', function () {
       expect(gh.contents()).to.eventually.be.rejectedWith('Can not retrieve posts: some error').and.notify(done);
     });
   });
+
+  describe('#getFile', function () {
+    it('should not change body.content if body.encoding !== "base64"', function (done) {
+      var gh = new GH({ghrepo: mockContents(null, {content: 'abc'})});
+      expect(gh.getFile()).to.eventually.become({content: 'abc'}).and.notify(done);
+    });
+
+    it('should decode body.content if body.encoding === "base64"', function (done) {
+      var gh = new GH({ghrepo: mockContents(null, {encoding: 'base64', content: 'dGVzdAo='})});
+      expect(gh.getFile()).to.eventually.become({encoding: 'base64', content: 'test\n'}).and.notify(done);
+    });
+
+    it('should not error even if body is null', function (done) {
+      var gh = new GH({ghrepo: mockContents(null, null)});
+      expect(gh.getFile()).to.eventually.become(null).and.notify(done);
+    });
+  });
 });
 
 describe('Post', function () {
@@ -104,7 +121,8 @@ describe('Post', function () {
 
       it('should have a default route (without a leading date)', function () {
         var post = new Post({
-          name: 'one-letter-repository-status-for-git-mercurial-subversion'});
+          name: 'one-letter-repository-status-for-git-mercurial-subversion'
+        });
         expect(post.route).to.equal('/2013/01/01/no-title');
       });
 
@@ -132,5 +150,28 @@ describe('Post', function () {
       expect(post.sections('---\ntitle: A Blog Post\n---\n\nBlog content start here...--- and should continue.')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
     });
   });
+
+  describe('#rewriteImageURLs', function () {
+    it('should not change content if neither parameter is passed in', function () {
+      var newContent = Post.searchAndReplace('content', undefined, undefined);
+      expect(newContent).to.equal('content');
+    });
+
+    it('should not change content if imagePrefix keys do not exist', function () {
+      var newContent = Post.searchAndReplace('content', undefined, 'new');
+      expect(newContent).to.equal('content');
+    });
+
+    it('should not change content if imageNewPrefix keys do not exist', function () {
+      var newContent = Post.searchAndReplace('content', 'old', undefined);
+      expect(newContent).to.equal('content');
+    });
+
+    it('should search and replace all occurences', function () {
+      var newContent = Post.searchAndReplace('content content', 'content', 'newcontent');
+      expect(newContent).to.equal('newcontent newcontent');
+    });
+  });
+
 
 });

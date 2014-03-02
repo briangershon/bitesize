@@ -1,4 +1,4 @@
-/*globals describe, it */
+/*globals describe, it, beforeEach */
 var chai = require("chai"),
   chaiAsPromised = require("chai-as-promised"),
   // sinon = require('sinon'),
@@ -75,55 +75,77 @@ describe('Post', function () {
       var post = new Post();
       expect(post.name).to.equal('2013-01-01-no-title.markdown');
       expect(post.title).to.equal('No Title');
-      expect(post.date).to.equal('2013-01-01 12:00');
+      expect(post.date).to.deep.equal(new Date('2013-01-01 12:00'));
       expect(post.categories).to.deep.equal([]);
       expect(post.tags).to.deep.equal([]);
       expect(post.body).to.equal('');
     });
 
-    it('should have all the normal fields', function () {
-      var post = new Post({
-        name: '2012-10-24-testing-for-google-closure-library.markdown',
-        content: '---\n' +
-          'title: "Testing JavaScript Code Running Google Closure Library"\n' +
-          'date: 2012-10-24 12:24\n' +
-          'categories:\n' +
-          '- Programming\n' +
-          'tags:\n' +
-          '- testing\n' +
-          '- JavaScript\n' +
-          '---\n' +
-          'CONTENT\nHERE\n'
+    describe('fields', function () {
+      var post;
+      beforeEach(function () {
+        post = new Post({
+          name: '2012-10-24-testing-for-google-closure-library.markdown',
+          content: '---\n' +
+            'title: "Testing JavaScript Code Running Google Closure Library"\n' +
+            'date: 2012-10-24 12:24\n' +
+            'categories:\n' +
+            '- Programming\n' +
+            'tags:\n' +
+            '- testing\n' +
+            '- JavaScript\n' +
+            '---\n' +
+            'CONTENT\nHERE\n'
+        });
       });
-      expect(post.name).to.equal('2012-10-24-testing-for-google-closure-library.markdown');
-      expect(post.title).to.equal('Testing JavaScript Code Running Google Closure Library');
-      expect(post.date).to.equal('2012-10-24 12:24');
-      expect(post.categories).to.deep.equal(['Programming']);
-      expect(post.tags).to.deep.equal(['testing', 'JavaScript']);
-      expect(post.body).to.equal('CONTENT\nHERE');
+
+      it('should have a name', function () {
+        expect(post.name).to.equal('2012-10-24-testing-for-google-closure-library.markdown');
+      });
+
+      it('should have a title', function () {
+        expect(post.title).to.equal('Testing JavaScript Code Running Google Closure Library');
+      });
+
+      it('should have categories', function () {
+        expect(post.categories).to.deep.equal(['Programming']);
+      });
+
+      it('should have tags', function () {
+        expect(post.tags).to.deep.equal(['testing', 'JavaScript']);
+      });
+
+      it('should have content', function () {
+        expect(post.body).to.equal('CONTENT\nHERE');
+      });
+
+      it('should have a Date object', function () {
+        expect(post.date).to.deep.equal(new Date('2012-10-24 12:24'));
+        console.log('post', post);
+      });
     });
 
     describe('route', function () {
       it('should have a default route if invalid filename', function () {
         var post = new Post({name: ''});
-        expect(post.route).to.equal('/2013/01/01/no-title');
+        expect(post.route).to.equal('/2013/01/01/no-title/');
       });
 
       it('should have a route based on the correct filename', function () {
         var post = new Post({name: '2013-04-09-one-letter-repository-status-for-git-mercurial-subversion.markdown'});
-        expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion');
+        expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion/');
       });
 
       it('should have a route based on the filename (even without a file extension)', function () {
         var post = new Post({name: '2013-04-09-one-letter-repository-status-for-git-mercurial-subversion'});
-        expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion');
+        expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion/');
       });
 
-      it('should have a default route (without a leading date)', function () {
+      it('should have a default route (if name is missing a leading date)', function () {
         var post = new Post({
           name: 'one-letter-repository-status-for-git-mercurial-subversion'
         });
-        expect(post.route).to.equal('/2013/01/01/no-title');
+        expect(post.route).to.equal('/2013/01/01/no-title/');
       });
 
     });

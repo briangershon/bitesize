@@ -9,7 +9,8 @@ chai.use(chaiAsPromised);
 // chai.use(sinonChai);
 
 var GH = require('../lib/bitesize.js').GH,
-  Post = require('../lib/bitesize.js').Post;
+  Post = require('../lib/bitesize.js').Post,
+  Blog = require('../lib/bitesize.js').Blog;
 
 /**
  * Pass in an err parameter to mock up an error.
@@ -71,14 +72,37 @@ describe('GH', function () {
 
 describe('Post', function () {
   describe('constructor', function () {
-    it('should default to sane values if no data', function () {
-      var post = new Post();
-      expect(post.name).to.equal('2013-01-01-no-title.markdown');
-      expect(post.title).to.equal('No Title');
-      expect(post.date).to.deep.equal(new Date('2013-01-01 12:00'));
-      expect(post.categories).to.deep.equal([]);
-      expect(post.tags).to.deep.equal([]);
-      expect(post.body).to.equal('');
+    describe('default fields', function () {
+      var post;
+
+      beforeEach(function () {
+        post = new Post();
+      });
+
+      it('should have a name', function () {
+        expect(post.name).to.equal('');
+      });
+
+      it('should have a title', function () {
+        expect(post.title).to.equal('No Title');
+      });
+
+      it('should not have a date', function () {
+        expect(post.date).to.equal(undefined);
+      });
+
+      it('should have no categories', function () {
+        expect(post.categories).to.deep.equal([]);
+      });
+
+      it('should have no tags', function () {
+        expect(post.tags).to.deep.equal([]);
+      });
+
+      it('should have no body', function () {
+        expect(post.body).to.equal('');
+      });
+
     });
 
     describe('fields', function () {
@@ -194,6 +218,11 @@ describe('Post', function () {
       expect(newContent).to.equal('newcontent newcontent');
     });
   });
+});
 
-
+describe('Blog', function () {
+  it('should skip posts that do not have a date', function () {
+    var blog = new Blog([{content: '---\ntitle: one\ndate: 2014-03-01 10:00\n---'}, {content: '---\ntitle: two\n---'}]);
+    expect(blog.posts.length).to.equal(1);
+  });
 });

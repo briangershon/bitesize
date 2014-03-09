@@ -6,7 +6,8 @@
 
 var github = require('octonode'),
   GH = require('./lib/bitesize.js').GH,
-  Blog = require('./lib/bitesize.js').Blog;
+  Blog = require('./lib/bitesize.js').Blog,
+  yfm = require('yfm');
 
 var envAccessToken = process.env.BITESIZE_GITHUB_ACCESS_TOKEN,
   envGitHubRepo = process.env.BITESIZE_BLOG_GITHUB_REPO,
@@ -20,8 +21,14 @@ var gh = new GH({
   postPath: envPostPath
 });
 
+console.log('Retrieving files, then displaying titles:');
+
 gh.getAllFiles().then(function (files) {
-  var blog = new Blog(files);
+  var incomingPosts = files.map(function (post) {
+    return {name: post.name, content: yfm(post.content)};
+  });
+
+  var blog = new Blog(incomingPosts);
   blog.posts.forEach(function (post) {
     console.log(post.title);
   });

@@ -3,7 +3,8 @@ var chai = require("chai"),
   chaiAsPromised = require("chai-as-promised"),
   // sinon = require('sinon'),
   // sinonChai = require("sinon-chai"),
-  expect = chai.expect;
+  expect = chai.expect,
+  yfm = require('yfm');
 
 chai.use(chaiAsPromised);
 // chai.use(sinonChai);
@@ -79,8 +80,8 @@ describe('Post', function () {
         post = new Post();
       });
 
-      it('should have a name', function () {
-        expect(post.name).to.equal('');
+      it('should have a filename', function () {
+        expect(post.filename).to.equal('');
       });
 
       it('should have a title', function () {
@@ -105,12 +106,17 @@ describe('Post', function () {
 
     });
 
-    describe('fields', function () {
-      var post;
-      beforeEach(function () {
-        post = new Post({
-          name: '2012-10-24-testing-for-google-closure-library.markdown',
-          content: '---\n' +
+    describe('problematic fields', function () {
+      it('should error if ymlDoc is a String', function () {
+        var yfmDoc = '---';
+        expect(function () {new Post('2012-10-24-testing-for-google-closure-library.markdown', yfmDoc); })
+          .to.throw('Missing YAML Front-Matter object. Expecting yfm object instead of a string.');
+      });
+    });
+
+    describe('expected fields', function () {
+      var post,
+        yfmDoc = yfm('---\n' +
             'title: "Testing JavaScript Code Running Google Closure Library"\n' +
             'date: 2012-10-24 12:24\n' +
             'categories:\n' +
@@ -119,12 +125,14 @@ describe('Post', function () {
             '- testing\n' +
             '- JavaScript\n' +
             '---\n' +
-            'CONTENT\nHERE\n'
-        });
+            'CONTENT\nHERE\n');
+
+      beforeEach(function () {
+        post = new Post('2012-10-24-testing-for-google-closure-library.markdown', yfmDoc);
       });
 
-      it('should have a name', function () {
-        expect(post.name).to.equal('2012-10-24-testing-for-google-closure-library.markdown');
+      it('should have a filename', function () {
+        expect(post.filename).to.equal('2012-10-24-testing-for-google-closure-library.markdown');
       });
 
       it('should have a title', function () {
@@ -145,55 +153,30 @@ describe('Post', function () {
 
       it('should have a Date object', function () {
         expect(post.date).to.deep.equal(new Date('2012-10-24 12:24'));
-        console.log('post', post);
       });
     });
 
     describe('route', function () {
       it('should have a default route if invalid filename', function () {
-        var post = new Post({name: ''});
+        var post = new Post('');
         expect(post.route).to.equal('/2013/01/01/no-title/');
       });
 
       it('should have a route based on the correct filename', function () {
-        var post = new Post({name: '2013-04-09-one-letter-repository-status-for-git-mercurial-subversion.markdown'});
+        var post = new Post('2013-04-09-one-letter-repository-status-for-git-mercurial-subversion.markdown');
         expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion/');
       });
 
       it('should have a route based on the filename (even without a file extension)', function () {
-        var post = new Post({name: '2013-04-09-one-letter-repository-status-for-git-mercurial-subversion'});
+        var post = new Post('2013-04-09-one-letter-repository-status-for-git-mercurial-subversion');
         expect(post.route).to.equal('/2013/04/09/one-letter-repository-status-for-git-mercurial-subversion/');
       });
 
       it('should have a default route (if name is missing a leading date)', function () {
-        var post = new Post({
-          name: 'one-letter-repository-status-for-git-mercurial-subversion'
-        });
+        var post = new Post('one-letter-repository-status-for-git-mercurial-subversion');
         expect(post.route).to.equal('/2013/01/01/no-title/');
       });
 
-    });
-  });
-
-  describe('#sections', function () {
-    it('should have a header and body if post is an empty string', function () {
-      var post = new Post();
-      expect(post.sections('')).to.deep.equal({header: '', body: ''});
-    });
-
-    it('should have a header and body and trim whitespace (without leading "---")', function () {
-      var post = new Post();
-      expect(post.sections('title: A Blog Post\n---\n\nBlog content start here...')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
-    });
-
-    it('should have a header and body and trim whitespace', function () {
-      var post = new Post();
-      expect(post.sections('---\ntitle: A Blog Post\n---\n\nBlog content start here...')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
-    });
-
-    it('should have a header and body and trim whitespace (if too many "---")', function () {
-      var post = new Post();
-      expect(post.sections('---\ntitle: A Blog Post\n---\n\nBlog content start here...--- and should continue.')).to.deep.equal({header: {title: 'A Blog Post'}, body: 'Blog content start here...'});
     });
   });
 
@@ -222,7 +205,7 @@ describe('Post', function () {
 
 describe('Blog', function () {
   it('should skip posts that do not have a date', function () {
-    var blog = new Blog([{content: '---\ntitle: one\ndate: 2014-03-01 10:00\n---'}, {content: '---\ntitle: two\n---'}]);
+    var blog = new Blog([{name: '', content: yfm('---\ntitle: one\ndate: 2014-03-01 10:00\n---')}, {name: '', content: yfm('---\ntitle: two\n---')}]);
     expect(blog.posts.length).to.equal(1);
   });
 });

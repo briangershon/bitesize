@@ -1,6 +1,6 @@
 # bitesize
 
-A JavaScript blog library that processes markdown files and creates blog data structures:
+A JavaScript blog library that processes YAML Front-Matter markdown files and creates blog data structures:
 
 * Post: A class that converts markdown with YAML front-matter into an object with properties representing the major pieces
 

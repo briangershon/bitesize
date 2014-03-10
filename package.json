@@ -1,7 +1,7 @@
 {
   "name": "bitesize",
-  "version": "0.0.6",
-  "description": "A JavaScript blog library that processes markdown files and creates blog data structures.",
+  "version": "0.0.7",
+  "description": "A simple blog library based on YAML Front-Matter Markdown documents.",
   "keywords": "blog, markdown, github",
   "main": "lib/bitesize.js",
   "scripts": {
@@ -26,10 +26,10 @@
     "node": "0.10.x"
   },
   "dependencies": {
-    "es6-promise": "~0.1.1"
   },
   "devDependencies": {
     "octonode": "~0.5.0",
+    "snag": "~0.0.1",
     "marked": "~0.3.1",
     "mocha": "~1.17.1",
     "chai": "~1.9.0",

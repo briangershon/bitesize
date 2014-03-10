@@ -1,20 +1,15 @@
 # bitesize
 
-A JavaScript blog library that processes YAML Front-Matter markdown files and creates blog data structures:
+A simple blog library based on YAML Front-Matter Markdown documents.
 
-* Post: A class that converts markdown with YAML front-matter into an object with properties representing the major pieces
+Expects [yfm](https://github.com/assemble/yfm) encoded markdown documents.
 
-* Blog: A class that holds an array of posts
+Includes:
 
-Includes a helper class:
+* Post: A class that manages individual blog posts.
 
-* GH: A class for pulling files out of a GitHub repository
+* Blog: A class that holds an array of posts.
 
-## More details
-
-Documents are formatted in the [Jekyll Front-Matter Markdown Format](http://jekyllrb.com/docs/frontmatter/)
-
-API returns ES6 JavaScript promises.
 
 ## Status of build
 

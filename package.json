@@ -1,6 +1,6 @@
 {
   "name": "bitesize",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A simple blog library based on YAML Front-Matter Markdown documents.",
   "keywords": "blog, markdown, github",
   "main": "lib/bitesize.js",

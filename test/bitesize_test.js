@@ -97,6 +97,24 @@ describe('Post', function () {
       });
     });
 
+    describe('with body search and replace', function () {
+      var post,
+        yfmDoc = yfm('/image/abc.png');
+
+      beforeEach(function () {
+        var options = {
+          image_prefix: '/image',
+          image_new_prefix: 'http://new/image'
+        };
+        post = new Post('2012-10-24-testing-for-google-closure-library.markdown', yfmDoc, options);
+      });
+
+      it('should replace image url in body', function () {
+        expect(post.body).to.equal('http://new/image/abc.png');
+      });
+
+    });
+
     describe('route', function () {
       it('should have a default route if invalid filename', function () {
         var post = new Post('');
@@ -121,7 +139,7 @@ describe('Post', function () {
     });
   });
 
-  describe('#rewriteImageURLs', function () {
+  describe('#searchAndReplace', function () {
     it('should not change content if neither parameter is passed in', function () {
       var newContent = Post.searchAndReplace('content', undefined, undefined);
       expect(newContent).to.equal('content');
